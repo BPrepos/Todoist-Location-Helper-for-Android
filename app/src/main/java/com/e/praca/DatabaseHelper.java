@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -24,13 +25,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_TASKSID = "tasks_id";
 
     private static final String CREATE_TABLE_TASK =
-            "CREATE TABLE IF NOT EXISTS "+ TABLE_TASK+"("+KEY_ID+" INTEGER PRIMARY KEY," + KEY_NAME+" TEXT );";
+            "CREATE TABLE IF NOT EXISTS "+ TABLE_TASK+"("+KEY_ID+" INTEGER PRIMARY KEY," + KEY_NAME+" TEXT);";
     private static final String CREATE_TABLE_LABEL =
             "CREATE TABLE IF NOT EXISTS "+ TABLE_LABEL+"("+KEY_ID+" INTEGER PRIMARY KEY," + KEY_NAME+" TEXT,"+ KEY_LATITUDE+" NUMBER(30,27),"+KEY_LONGITUDE+" NUMBER(30,27) );";
     private static final String CREATE_TABLE_LABELS_TASKS =
-            "CREATE TABLE IF NOT EXISTS " + TABLE_LABELS_TASKS + "(" + KEY_LABELSID + " INTEGER," + KEY_TASKSID + " INTEGER," +
-                    "FOREIGN KEY(" + KEY_LABELSID+ ") REFERENCES " + TABLE_LABEL + "(" + KEY_ID + ")," +
-                    "FOREIGN KEY(" + KEY_TASKSID+ ") REFERENCES " + TABLE_TASK + "(" + KEY_ID + ");";
+            "CREATE TABLE IF NOT EXISTS " + TABLE_LABELS_TASKS + "(" + KEY_LABELSID + " INTEGER NOT NULL," + KEY_TASKSID +
+                    " INTEGER NOT NULL, PRIMARY KEY ("+KEY_LABELSID+","+KEY_TASKSID+"), FOREIGN KEY("+
+                    KEY_LABELSID+") REFERENCES "+TABLE_LABEL+"("+KEY_ID+"), FOREIGN KEY("+
+                    KEY_TASKSID+") REFERENCES "+TABLE_TASK+"("+KEY_ID+"));";
+
+
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
@@ -51,6 +55,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         Log.d("table", CREATE_TABLE_TASK);
+        Log.d("table", CREATE_TABLE_LABEL);
+        Log.d("table", CREATE_TABLE_LABELS_TASKS);
     }
 
 
@@ -93,6 +99,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             insertLabel(o.getName(),o.getLabelid());
         }
 
+    }
+
+    public boolean insertTask(String name, long id)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(KEY_NAME, name);
+        contentValues.put(KEY_ID, id);
+        long result = db.insert(TABLE_TASK, null, contentValues);
+        return result != -1;
     }
 
 

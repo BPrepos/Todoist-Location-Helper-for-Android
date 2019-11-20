@@ -3,10 +3,14 @@ package com.e.praca;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.MenuInflater;
 import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -23,9 +27,7 @@ public class MainActivity extends AppCompatActivity {
     DatabaseHelper db;
     JsonHelper jh;
     String labelLink = "https://api.todoist.com/rest/v1/labels?token=7d152384d04c1126b48d96a173162edc81e67d01";
-
-    Button add_data;
-    EditText add_name;
+    String taskLink =  "https://api.todoist.com/rest/v1/tasks?token=7d152384d04c1126b48d96a173162edc81e67d01";
 
     ListView labelList;
 
@@ -55,6 +57,30 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.menuTasks:
+                Intent intent = new Intent(this, TaskList.class);
+                this.startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
 
     private void viewData(){
         Cursor cursor = db.viewData();
@@ -87,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            labelList = (ListView)findViewById(R.id.labels_list);
         }
 
         @Override
