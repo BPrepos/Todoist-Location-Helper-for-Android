@@ -28,6 +28,5 @@ public class Task implements Serializable {
         this.taskId = id;
     }
 
-
-
+    public long getTaskId() {return taskId;}
 }

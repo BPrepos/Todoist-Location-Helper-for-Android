@@ -7,6 +7,7 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 
 
@@ -56,4 +57,40 @@ public class JsonHelper {
         }
         return al;
     }
+
+    public ArrayList<Task> getTasksFromJSONArray(String jsonString)
+    {
+        JSONArray array = getJSONArray(jsonString);
+        ArrayList<Task> al = new ArrayList();
+        for (Object o : array) {
+            JSONObject obj = (JSONObject) o;
+            String name = obj.get("name").toString();
+            long id = (long) obj.get("id");
+            Task tTask = new Task(name, id);
+            al.add(tTask);
+        }
+        return al;
+    }
+
+    public ArrayList<LabelTask> getLabelTaskFromJSONArray(String jsonString)
+    {
+        JSONArray array = getJSONArray(jsonString);
+        ArrayList<LabelTask> al = new ArrayList();
+        for (Object o : array) {
+            JSONObject obj = (JSONObject) o;
+            long taskId = (long) obj.get("id");
+            JSONArray jsonArray = (JSONArray) obj.get("label_ids");
+            Iterator<Long> iterator = jsonArray.iterator();
+            while (iterator.hasNext())
+            {
+                LabelTask tmp = new LabelTask(iterator.next(),taskId);
+                al.add(tmp);
+            }
+        }
+        return al;
+    }
+
+
+
+
 }

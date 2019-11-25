@@ -98,7 +98,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         {
             insertLabel(o.getName(),o.getLabelid());
         }
-
     }
 
     public boolean insertTask(String name, long id)
@@ -112,7 +111,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    public void addTaskArraytoDatabase(ArrayList<Task> taskArrayList)
+    {
+        for (Task o:taskArrayList)
+        {
+            insertLabel(o.getName(),o.getTaskId());
+        }
+    }
 
 
+    public boolean insertLabelsTasks(long labelId, long taskId)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(KEY_LABELSID, labelId);
+        contentValues.put(KEY_TASKSID, taskId);
+        long result = db.insert(TABLE_LABELS_TASKS, null, contentValues);
+        return result != -1;
+    }
+
+    public void addTasksLabelsArraytoDatabase(ArrayList<LabelTask> labelTaskArrayList)
+    {
+        for (LabelTask o:labelTaskArrayList)
+        {
+            insertLabelsTasks(o.getLabelId(),o.getTaskId());
+        }
+    }
 
 }
